@@ -1,3 +1,4 @@
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class SHA {
@@ -32,7 +33,14 @@ public class SHA {
         System.out.println(Arrays.toString(byte_text));
         byte_text[63] = (byte)size;
         System.out.println(Arrays.toString(byte_text));
+        //int slovo = (int) byte_text[0];
         // шаг 5
+        byte[] byte_1 = Arrays.copyOf(byte_text, 64);
+        System.out.println(byte_1);
+        int test = ByteBuffer.wrap(byte_1).getInt();
+        System.out.println(test); // преобразование работает, останется зациклить
+
+
         /* то что понадобится
         int[] int_text = new int[byte_text.length];
         System.out.println(Arrays.toString(byte_text));
