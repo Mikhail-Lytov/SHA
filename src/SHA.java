@@ -19,26 +19,37 @@ public class SHA {
             0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
             0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2};
     public SHA(){
+        //шаг 1
         String text = "hello world";
-        byte[] byte_text = text.getBytes();
+        byte[] byte_text = text.getBytes();//преобразуем строку в биты
+        //Добавляем едиинцу
         byte_text = Arrays.copyOf(byte_text, byte_text.length + 1);
         byte_text[byte_text.length - 1] = (byte) 0b10000000;
         System.out.println(Arrays.toString(byte_text));
         // Тут мы дополняем массив, нужно будет позже сделать универсальным
+        //Добавляем код нулями, но пока что только для одного блока
         int size_max = 64 - byte_text.length;
         int size = byte_text.length;
         System.out.println(size);
         byte_text = Arrays.copyOf(byte_text, 64);
         Arrays.fill(byte_text,size, 64, (byte) 0);
         System.out.println(Arrays.toString(byte_text));
+        //добавляем длинну слова
         byte_text[63] = (byte)size;
         System.out.println(Arrays.toString(byte_text));
         //int slovo = (int) byte_text[0];
-        // шаг 5
-        byte[] byte_1 = Arrays.copyOf(byte_text, 64);
-        System.out.println(byte_1);
-        int test = ByteBuffer.wrap(byte_1).getInt();
-        System.out.println(test); // преобразование работает, останется зациклить
+        // шаг 5 делаем слова
+        int[] array_int = new int[16];
+        for(int i =0; i < 16; i++){
+            byte[] byte_word = Arrays.copyOfRange(byte_text, i * 4, 4 + i * 4);
+            array_int[i] = ByteBuffer.wrap(byte_word).getInt();
+        }
+        System.out.println(Arrays.toString(array_int));
+
+        //byte[] byte_1 = Arrays.copyOf(byte_text, 64);
+        //System.out.println(byte_1);
+        //int test = ByteBuffer.wrap(byte_1).getInt();
+        //System.out.println(test); // преобразование работает, останется зациклить
 
 
         /* то что понадобится
