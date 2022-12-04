@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -25,7 +26,6 @@ public class SHA {
         byte[] byte_text = String_in_Bytes(text);
         //Добавляем едиинцу
         byte_text = add_one(byte_text);
-        add_zero(byte_text);
 
         // Тут мы дополняем массив, нужно будет позже сделать универсальным
         //Добавляем код нулями, но пока что только для одного блока
@@ -33,15 +33,11 @@ public class SHA {
 
         for (int i = 0; i < number_blocks; i++) {
             int[] array_int  = words(Arrays.copyOfRange(byte_text, i * 64, 64 + i * 64));
-            
-
-            // шаг 5 делаем слова
-
+            //System.out.println(Arrays.toString(array_int));
             array_int = add_words_zero(array_int);
+            array_int = changing_zero_indexes(array_int);
+            compression(array_int);
 
-
-            int s_0 = Integer.rotateRight(array_int[1], 7) ^ Integer.rotateRight(array_int[1], 18) ^ (array_int[1] >> 3);
-            System.out.println(Integer.toBinaryString(s_0));
         }
 
 
@@ -123,5 +119,62 @@ public class SHA {
         Arrays.fill(array_int, size, 64, 0);
 
         return  array_int;
+    }
+    private int[] changing_zero_indexes(int[] array_int){
+        long twe_32 = 4294967296l;
+        System.out.println(twe_32);
+        for(int j = 16; j < 64; j++) {
+            long s_0 = Integer.rotateRight(array_int[j-15], 7) ^ Integer.rotateRight(array_int[j-15], 18) ^ (array_int[j-15] >>> 3);
+            long s_1 = Integer.rotateRight(array_int[j - 2], 17) ^ Integer.rotateRight(array_int[j - 2], 19) ^ (array_int[j - 2] >>> 10);
+            long result = (array_int[j-16] + s_0 + array_int[j - 7] + s_1) % twe_32;
+            array_int[j] = (int) result;
+            //System.out.println("arr[" + j + "]: " +Integer.toBinaryString(array_int[j]));
+        }
+        return array_int;
+    }
+    private void compression(int[] array_int){
+        long twe_32 = 4294967296l;
+        int a = h0;
+        int b = h1;
+        int c = h2;
+        int d = h3;
+        int e = h4;
+        int f = h5;
+        int g = h6;
+        int h = h7;
+        for(int j = 0; j < 64; j++){
+            int Sum_1 = Integer.rotateRight(e, 6) ^ Integer.rotateRight(e, 11) ^ Integer.rotateRight(e,25);
+            int Ch = (e & f) ^ ((~e) & g );
+            int T_1 = (int) (h + Sum_1 + Ch + arr_const[j] + array_int[j] % twe_32);
+            int Sum_0 = Integer.rotateRight(a, 2) ^ Integer.rotateRight(a, 13) ^ Integer.rotateRight(a, 22);
+            int Ma = (a & b) ^ (a & c) ^ (b & c);
+            int T_2 = (int) (Sum_0 + Ma % twe_32);
+            h = g;
+            g = f;
+            f = e;
+            e = (int) (d + T_1 % twe_32);
+            d = c;
+            c = b;
+            b = a;
+            a = (int) (T_1 +T_2 % twe_32);
+
+        }
+
+        h0 += a;
+        h1 += b;
+        h2 += c;
+        h3 += d;
+        h4 += e;
+        h5 += f;
+        h6 += g;
+        h7 += h;
+        System.out.println("[a] " + Integer.toBinaryString(h0));
+        System.out.println("[b] " + Integer.toBinaryString(h1));
+        System.out.println("[c] " + Integer.toBinaryString(h2));
+        System.out.println("[d] " + Integer.toBinaryString(h3));
+        System.out.println("[e] " + Integer.toBinaryString(h4));
+        System.out.println("[f] " + Integer.toBinaryString(h5));
+        System.out.println("[g] " + Integer.toBinaryString(h6));
+        System.out.println("[h] " + Integer.toBinaryString(h7));
     }
 }
