@@ -90,17 +90,26 @@ public class SHA {
         return byte_text;
     }
     private byte[] add_zero(byte[] byte_text){
-        int size_array = byte_text.length; // для изменения размера массива
-        int length_source_array = byte_text.length; // длина входного массива
+        long size_array = byte_text.length; // для изменения размера массива
+        long length_source_array = byte_text.length; // длина входного массива
         while (size_array % 64 != 0){
             byte_text = Arrays.copyOf(byte_text, byte_text.length + 1);
             byte_text[byte_text.length - 1] = (byte) 0b00000000;
             size_array = byte_text.length;
 
         }
-        byte_text[size_array - 1] = (byte) ((length_source_array - 1) * 8);
+        byte[] line = new byte[8];
+        ByteBuffer line_array = ByteBuffer.allocate(line.length);
+        line_array.putLong((length_source_array - 1) * 8);
+        line = line_array.array();
+        System.out.println(Arrays.toString(line));
+        for (int i = 0; i < line.length; i++){
+            byte_text[Math.toIntExact(size_array - 1 - i)] = line[line.length - 1 - i];
+        }
         //System.out.println(Arrays.toString(byte_text));
-        number_blocks = size_array / 64;
+        //byte_text[Math.toIntExact(size_array - 1)] = (byte) ((length_source_array - 1) * 8);
+        //System.out.println(Arrays.toString(byte_text));
+        number_blocks = (int) (size_array / 64);
         return byte_text;
 
     }
