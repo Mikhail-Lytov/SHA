@@ -1,7 +1,8 @@
 public class Main {
     public static void main(String[] args) {
-        System.out.println("hello world!");
-        SHA sha = new SHA();
+        SHA sha = new SHA("привет мир");
+        System.out.println(sha.gethex());
+        System.out.println(sha.getInteger());
         /*byte value = 2;
         byte shortByteValue = 0b10; // 2
         System.out.println(shortByteValue);

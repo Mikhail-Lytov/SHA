@@ -20,13 +20,8 @@ public class SHA {
             0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
             0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
             0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2};
-    public SHA(){
+    public SHA(String text){
         //шаг 1
-        String text = "привет, меня зовут Миша и я твой друг\n" +
-                "Сколько ты стоишь\n" +
-                "это тест \n" +
-                "проверка\n" +
-                "надо что-то писать, чтобы проверить работу";
         byte[] byte_text = String_in_Bytes(text);
         //Добавляем едиинцу
         byte_text = add_one(byte_text);
@@ -67,7 +62,7 @@ public class SHA {
         ByteBuffer line_array = ByteBuffer.allocate(line.length);
         line_array.putLong((length_source_array - 1) * 8);
         line = line_array.array();
-        System.out.println(Arrays.toString(line));
+        //System.out.println(Arrays.toString(line));
         for (int i = 0; i < line.length; i++){
             byte_text[Math.toIntExact(size_array - 1 - i)] = line[line.length - 1 - i];
         }
@@ -88,7 +83,6 @@ public class SHA {
     }
     private int[] add_words_zero(int[] array_int){
         int size = array_int.length + 1;
-        System.out.println(size);
         array_int = Arrays.copyOf(array_int, 64);
         Arrays.fill(array_int, size, 64, 0);
 
@@ -96,7 +90,7 @@ public class SHA {
     }
     private int[] changing_zero_indexes(int[] array_int){
         long twe_32 = 4294967296l;
-        System.out.println(twe_32);
+
         for(int j = 16; j < 64; j++) {
             long s_0 = Integer.rotateRight(array_int[j-15], 7) ^ Integer.rotateRight(array_int[j-15], 18) ^ (array_int[j-15] >>> 3);
             long s_1 = Integer.rotateRight(array_int[j - 2], 17) ^ Integer.rotateRight(array_int[j - 2], 19) ^ (array_int[j - 2] >>> 10);
@@ -142,17 +136,57 @@ public class SHA {
         h5 += f;
         h6 += g;
         h7 += h;
-        System.out.println("[a] " + Integer.toBinaryString(h0));
-        System.out.println("[b] " + Integer.toBinaryString(h1));
-        System.out.println("[c] " + Integer.toBinaryString(h2));
-        System.out.println("[d] " + Integer.toBinaryString(h3));
-        System.out.println("[e] " + Integer.toBinaryString(h4));
-        System.out.println("[f] " + Integer.toBinaryString(h5));
-        System.out.println("[g] " + Integer.toBinaryString(h6));
-        System.out.println("[h] " + Integer.toBinaryString(h7));
     }
     public String gethex(){
         String hex = Integer.toHexString(h0) + Integer.toHexString(h1) + Integer.toHexString(h2) + Integer.toHexString(h3) + Integer.toHexString(h4) + Integer.toHexString(h5) + Integer.toHexString(h6) + Integer.toHexString(h7);
         return hex;
+    }
+    public int getH0(){
+        return h0;
+    }
+    public int getH1(){
+        return h1;
+    }
+
+    public int getH2() {
+        return h2;
+    }
+
+    public int getH3() {
+        return h3;
+    }
+
+    public int getH4() {
+        return h4;
+    }
+
+    public int getH5() {
+        return h5;
+    }
+
+    public int getH6() {
+        return h6;
+    }
+
+    public int getH7() {
+        return h7;
+    }
+    public BigInteger getInteger(){
+        String hex =  gethex();
+        System.out.println(hex);
+        BigInteger result = new BigInteger(String.valueOf(0));
+        BigInteger element =  new BigInteger(String.valueOf(0));
+        String element_str;
+        Long SHA_int;
+        BigInteger step_16 = new BigInteger(String.valueOf(16));
+        for(int i = 0; i < 64; i++){
+            element_str = hex.substring(i, i+1);
+            SHA_int = Long.parseLong(element_str, 16);
+            element_str = SHA_int.toString();
+            element = new BigInteger(element_str);
+            element = element.multiply(step_16.pow(64 - i - 1));
+            result =  result.add(element);
+        }
+        return result;
     }
 }
