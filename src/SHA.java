@@ -12,7 +12,7 @@ public class SHA {
     private int h5 = 0x9b05688c;
     private int h6 = 0x1f83d9ab;
     private int h7 = 0x5be0cd19;
-    int[] arr_const = {0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    private static int[] ARR_CONST = {0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
             0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
             0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
             0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
@@ -22,7 +22,11 @@ public class SHA {
             0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2};
     public SHA(){
         //шаг 1
-        String text = "hello world";
+        String text = "привет, меня зовут Миша и я твой друг\n" +
+                "Сколько ты стоишь\n" +
+                "это тест \n" +
+                "проверка\n" +
+                "надо что-то писать, чтобы проверить работу";
         byte[] byte_text = String_in_Bytes(text);
         //Добавляем едиинцу
         byte_text = add_one(byte_text);
@@ -40,45 +44,6 @@ public class SHA {
 
         }
 
-
-        /*
-        System.out.println(Integer.toBinaryString(array_int[1]));
-        int left = array_int[1] << 25;
-        int right = array_int[1] >> 7;
-        int w_1 = left + right;
-        int w_2 = array_int[1] >> 18;
-        int w_3 = array_int[1] >> 3;
-        System.out.println(Integer.toBinaryString(w_1));
-        int s_0 = w_1;
-        s_0 = Integer.rotateRight(array_int[1], 7);
-        System.out.println(Integer.toBinaryString(s_0));// поворот в право
-        //System.out.println(w_1);
-        System.out.println("11011110110111100100000011101110"); */
-
-
-
-        //byte[] byte_1 = Arrays.copyOf(byte_text, 64);
-        //System.out.println(byte_1);
-        //int test = ByteBuffer.wrap(byte_1).getInt();
-        //System.out.println(test); // преобразование работает, останется зациклить
-
-
-        /* то что понадобится
-        int[] int_text = new int[byte_text.length];
-        System.out.println(Arrays.toString(byte_text));
-        for (int i = 0; i < byte_text.length; i++ ){
-            int_text[i] = Integer.parseInt(Integer.toBinaryString(byte_text[i] & 0xFF));
-            //System.out.println(i_1);
-        }
-        int_text = Arrays.copyOf(int_text, int_text.length + 1);
-        System.out.println(Arrays.toString(int_text));
-        System.out.println(int_text[0]);
-        */
-        //String a = Integer.toBinaryString('h');
-        //System.out.println(a);
-        //int i_1 = Integer.parseInt(Integer.toBinaryString(b1 & 0xFF));
-        //String s1 = String.format("%8s", Integer.toBinaryString(b1 & 0xFF)).replace(' ', '0');
-        //System.out.println(s1);
     }
     private byte[] String_in_Bytes(String text){
         byte[] byte_text = text.getBytes();
@@ -154,7 +119,7 @@ public class SHA {
         for(int j = 0; j < 64; j++){
             int Sum_1 = Integer.rotateRight(e, 6) ^ Integer.rotateRight(e, 11) ^ Integer.rotateRight(e,25);
             int Ch = (e & f) ^ ((~e) & g );
-            int T_1 = (int) (h + Sum_1 + Ch + arr_const[j] + array_int[j] % twe_32);
+            int T_1 = (int) (h + Sum_1 + Ch + ARR_CONST[j] + array_int[j] % twe_32);
             int Sum_0 = Integer.rotateRight(a, 2) ^ Integer.rotateRight(a, 13) ^ Integer.rotateRight(a, 22);
             int Ma = (a & b) ^ (a & c) ^ (b & c);
             int T_2 = (int) (Sum_0 + Ma % twe_32);
@@ -185,5 +150,9 @@ public class SHA {
         System.out.println("[f] " + Integer.toBinaryString(h5));
         System.out.println("[g] " + Integer.toBinaryString(h6));
         System.out.println("[h] " + Integer.toBinaryString(h7));
+    }
+    public String gethex(){
+        String hex = Integer.toHexString(h0) + Integer.toHexString(h1) + Integer.toHexString(h2) + Integer.toHexString(h3) + Integer.toHexString(h4) + Integer.toHexString(h5) + Integer.toHexString(h6) + Integer.toHexString(h7);
+        return hex;
     }
 }
